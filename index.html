@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Replay 3D — Quadra de Vôlei de Praia</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; background: #0a0e14; }
+      #app { width: 100vw; height: 100vh; }
+      canvas { display: block; }
+
+      #hud {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        color: #e8edf4;
+        font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        z-index: 10;
+        pointer-events: none;
+        max-width: 360px;
+      }
+      #hud h1 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+        letter-spacing: 0.02em;
+      }
+      #hud p {
+        font-size: 12px;
+        line-height: 1.5;
+        margin: 0;
+        color: #9aa7b8;
+      }
+
+      #legend {
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        color: #e8edf4;
+        font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 11px;
+        line-height: 1.9;
+        background: rgba(12, 16, 24, 0.72);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        padding: 12px 16px;
+        z-index: 10;
+        backdrop-filter: blur(6px);
+      }
+      #legend .row { display: flex; align-items: center; gap: 8px; }
+      #legend .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+      #legend .flow {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: #7fd4ff;
+        font-size: 10.5px;
+        white-space: pre;
+        font-family: "Courier New", monospace;
+        line-height: 1.5;
+      }
+
+      #controls-hint {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        color: #6b7688;
+        font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 11px;
+        text-align: right;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      #loading {
+        position: fixed;
+        inset: 0;
+        background: #0a0e14;
+        color: #9aa7b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 13px;
+        z-index: 100;
+        transition: opacity 0.4s ease;
+      }
+
+      #goto-app {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        z-index: 10;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ff9d4d, #ff5f5f);
+        color: #1a0e08;
+        font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 0.01em;
+        box-shadow: 0 8px 24px rgba(255, 95, 95, 0.35), 0 0 0 1px rgba(255,255,255,0.15) inset;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      #goto-app:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(255, 95, 95, 0.45), 0 0 0 1px rgba(255,255,255,0.2) inset;
+      }
+      #goto-app svg { width: 16px; height: 16px; flex: none; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="loading">Carregando cena…</div>
+
+    <div id="hud">
+      <h1>Sistema de Replay — Vôlei de Praia</h1>
+      <p>Proposta técnica de infraestrutura: 2 câmeras IP, rede PoE, NVR e botão físico de replay via Raspberry Pi.</p>
+    </div>
+
+    <div id="controls-hint">
+      Arrastar: orbitar&nbsp;&nbsp;·&nbsp;&nbsp;Scroll: zoom&nbsp;&nbsp;·&nbsp;&nbsp;Botão direito: pan
+    </div>
+
+    <div id="legend">
+      <div class="row"><span class="dot" style="background:#ff5f5f"></span> Câmera IP (1 e 2)</div>
+      <div class="row"><span class="dot" style="background:#ffb100"></span> Eletroduto / cabo Cat6</div>
+      <div class="row"><span class="dot" style="background:#4ea1ff"></span> Rack técnico (switch PoE + NVR)</div>
+      <div class="row"><span class="dot" style="background:#7fffab"></span> Raspberry Pi</div>
+      <div class="row"><span class="dot" style="background:#ff3b3b"></span> Botão REPLAY</div>
+      <div class="flow">Câmera 1 ─┐
+Câmera 2 ─┼→ Switch PoE → Servidor/NVR
+          └→ Raspberry Pi → Botão REPLAY</div>
+    </div>
+
+    <a id="goto-app" href="/webapp/">
+      Ver interface do sistema
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
